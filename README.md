@@ -1,13 +1,19 @@
-json-schema-filter
+#json-schema-filter
 ==================
 
-Filters (removes) objects recursivly from document based on passed json-schema
+## Filters (removes) objects recursivly from document based on passed json-schema
 
-Note that this does NOT validate your document againts the schema, use someting like ```JSV``` npm after calling.
+** Note that this does NOT validate your document againts the schema, use someting like ```JSV``` npm after calling.**
 
 For performance reasons it is assumed that the json-schema contains less items then the document, that is you are going to be removing from the document in most or all cases, if not I would recomend another solution which bases its recursive evalution on the document instead.
 
-Usage...
+## Install
+
+```bash
+$ npm install json-schema-filter
+```
+
+## Usage...
 
 ```javascript
 
@@ -70,4 +76,3 @@ console.log(results);  // # {firstName: 'Johnny', lastName: 'Dowski', contacts: 
 
 ```
 
-GET /repos/alank64/json-schema-filter/contents/LICENCE
