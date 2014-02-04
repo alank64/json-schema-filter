@@ -54,4 +54,20 @@ var results = filter(schema, document);
 
 console.log(results);  // # {firstName: 'John', lastName: 'Dow!'}
 
+// Works on nested objects and arrays as well...
+document = {
+	firstName: 'Johnny',
+	lastName: 'Dowsky',
+	contacts: [
+		{phone: '303943', shouldNot: 'see this!'},
+		{phone; '399494'}
+	]
+}
+var nestedResults = filter(schema, document);
+
+console.log(results);  // # {firstName: 'Johnny', lastName: 'Dowski', contacts: [{phone: '303943', phone: '399494'}]}
+
+
 ```
+
+GET /repos/alank64/json-schema-filter/contents/LICENCE
