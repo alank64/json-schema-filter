@@ -11,13 +11,15 @@ function filterObjectOnSchema(schema, doc){
     if (schema.type == 'object') {
       results = {};
       Object.keys(schema.properties).forEach(function(key){
-        var sp = schema.properties[key];
-        if ( sp.type == 'object'){
-         results[key] = filterObjectOnSchema(sp, doc[key]);
-        }else if(sp.type == 'array'){
-          if (doc[key]) results[key] = filterObjectOnSchema(sp, doc[key]);
-        }else{
-          if (doc[key]) results[key] = doc[key]; 
+        if (doc[key] !== undefined){
+          var sp = schema.properties[key];
+          if ( sp.type == 'object'){
+           results[key] = filterObjectOnSchema(sp, doc[key]);
+          }else if(sp.type == 'array'){
+            if (doc[key]) results[key] = filterObjectOnSchema(sp, doc[key]);
+          }else{
+            if (doc[key]) results[key] = doc[key]; 
+          }
         }
       });
 
