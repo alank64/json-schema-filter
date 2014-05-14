@@ -33,6 +33,10 @@ var schema = {
         "type": "integer",
         "minimum": 0
       },
+      "general": {
+        "type": "object",
+        "required": false
+      },
       "contacts": {
         "type": "array",
         "id": "http://jsonschema.net/contacts",
@@ -75,3 +79,10 @@ console.log(results);  // # {firstName: 'Johnny', lastName: 'Dowski', contacts: 
 
 ```
 
+### Notes:
+
+#### "object" without "properties" or free form objects
+
+If a ```"type": "object"``` with no ```"property":``` is defined (see 'general:' in above example), or empty, the entire object is removed from the results. It could be that you require it to be included but empty, but to the best of my knowledge I thought it would be cleaner to simply remove it if empty. Else it copies everything over, as in all of what is in the properties of the key.
+
+Backgound info: The lack of ```property``` is legal in json-schema and means anything goes, or what I refer to as free-form.. free-style.. oh well, pick your meaning for it, it has the word 'free'!

@@ -19,6 +19,10 @@ describe('json-schema-filter', function(){
         "type": "integer",
         "minimum": 0
       },
+      "general": {
+        "type": "object",
+        "required": false
+      },
       "contacts": {
         "type": "array",
         "id": "http://jsonschema.net/contacts",
@@ -53,7 +57,7 @@ describe('json-schema-filter', function(){
 
   });
 
-  it('filters the document with exclusions', function(){
+  it('excludes non schema defined objects', function(){
     var document = {
       firstName: 'Andrew',
       lastName: 'Lank',
@@ -61,12 +65,11 @@ describe('json-schema-filter', function(){
     }
 
     var result = filter(schema, document);
-    console.log(result);
 
     expect(result).to.eql({firstName: 'Andrew', lastName: 'Lank'});
   });
 
-  it('filters arrays as well', function(){
+  it('excludes non schema defined array objects', function(){
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888', shouldNot: 'see this'}]
@@ -76,6 +79,42 @@ describe('json-schema-filter', function(){
 
     expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
   });
+
+  it('accepts free form objects', function(){
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      general: {hobbies: ['cylcing', 'jogging', 'death'], drinking_abilities: 'professional'}
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql(document);
+  });
+
+  it('accepts free form objects, if empty do not include them', function(){
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      general: {}
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
+  });
+
+  it('accepts free form objects that are absent', function(){
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql(document);
+  });
+
 });
 
 
