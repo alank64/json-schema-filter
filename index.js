@@ -29,7 +29,7 @@ function filterObjectOnSchema(schema, doc){
           }else if(sp.type == 'array'){
             if (doc[key]) results[key] = filterObjectOnSchema(sp, doc[key]);
           }else{
-            if (doc[key]) results[key] = doc[key]; 
+            if (doc[key] != null) results[key] = doc[key]; 
           }
         }
       });
