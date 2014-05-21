@@ -1,6 +1,6 @@
 {
   "name": "json-schema-filter",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Filters (removes) objects from document based on passed json-schema",
   "main": "index.js",
   "devDependencies": {
