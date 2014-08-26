@@ -38,10 +38,15 @@ function filterObjectOnSchema(schema, doc){
       });
 
     }else if (schema.type == 'array'){
-      results = [];
-      doc.forEach(function(item){
-        results.push(filterObjectOnSchema(schema.items, item)); 
-      });
+      // arrays can hold objects or literals
+      if (schema.items.type == 'object') {
+        results = [];
+        doc.forEach(function (item) {
+          results.push(filterObjectOnSchema(schema.items, item));
+        });
+      } else {
+        results = doc;
+      }
     }
 
     return results;

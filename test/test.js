@@ -38,6 +38,13 @@ describe('json-schema-filter', function(){
             }
           }
         }
+      },
+      "hobbies":{
+        "type": "array",
+        "required": false,
+        "items": {
+          "type": "string"
+        }
       }
     },
     "required": ["firstName", "lastName"]
@@ -61,7 +68,7 @@ describe('json-schema-filter', function(){
     var document = {
       firstName: 'Andrew',
       lastName: 'Lank',
-      thisOne: 'should not appear in results',
+      thisOne: 'should not appear in results'
     }
 
     var result = filter(schema, document);
@@ -107,13 +114,25 @@ describe('json-schema-filter', function(){
   it('accepts free form objects that are absent', function(){
     var document = {
       firstName: 'Andrew',
-      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}]
     }
 
-    var result = filter(schema, document);
+    var result = filter(schema, document)
 
-    expect(result).to.eql(document);
+    expect(result).to.eql(document)
   });
+  it('filters array literals', function(){
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      hobbies: ['driving', 'working', 'working harder', 'wish I wasn\'t working']
+    }
+
+    var results = filter(schema, document)
+
+    expect(results).to.eql(document)
+
+  })
 
 });
 
