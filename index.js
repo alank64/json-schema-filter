@@ -8,8 +8,12 @@ function filterObjectOnSchema(schema, doc){
     //console.log("DOC: ", JSON.stringify(doc, null, 2));
     //console.log("SCH: ", JSON.stringify(schema, null, 2));
 
-    if (schema.type == 'object' && schema.properties) {
+    if (schema.type == 'object') {
       results = {};   // holds this levels items
+
+      if (!schema.properties) {
+        return doc;
+      }
 
       // process properties  -  recursive
       Object.keys(schema.properties).forEach(function(key){
