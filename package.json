@@ -1,6 +1,6 @@
 {
   "name": "uber-json-schema-filter",
-  "version": "0.1.4-empty-properties2",
+  "version": "1.0.0",
   "description": "Filters (removes) objects from document based on passed json-schema",
   "main": "index.js",
   "devDependencies": {
