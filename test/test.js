@@ -19,6 +19,10 @@ describe('json-schema-filter', function(){
         "type": "integer",
         "minimum": 0
       },
+      "isLive": {
+        "description": "Live or dead",
+        "type": "boolean"
+      },
       "general": {
         "type": "object",
         "required": false
@@ -68,12 +72,14 @@ describe('json-schema-filter', function(){
     var document = {
       firstName: 'Andrew',
       lastName: 'Lank',
+      age: 0,
+      isLive: false,
       thisOne: 'should not appear in results'
     }
 
     var result = filter(schema, document);
 
-    expect(result).to.eql({firstName: 'Andrew', lastName: 'Lank'});
+    expect(result).to.eql({firstName: 'Andrew', lastName: 'Lank', age: 0, isLive: false});
   });
 
   it('excludes non schema defined array objects', function(){
