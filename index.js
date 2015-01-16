@@ -11,6 +11,10 @@ function filterObjectOnSchema(schema, doc){
     if (schema.type == 'object') {
       results = {};   // holds this levels items
 
+      if (!schema.properties) {
+        return doc;
+      }
+
       // process properties  -  recursive
       Object.keys(schema.properties).forEach(function(key){
         if (doc[key] !== undefined){
@@ -23,7 +27,9 @@ function filterObjectOnSchema(schema, doc){
             } else {
               if (Object.keys(doc[key]).length > 0){
                 results[key] = doc[key];
-              } 
+              } else {
+                results[key] = {};
+              }
             }
 
           }else if(sp.type == 'array'){
