@@ -105,7 +105,7 @@ describe('json-schema-filter', function(){
     expect(result).to.eql(document);
   });
 
-  it('accepts free form objects, if empty do not include them', function(){
+  it('accepts free form objects, still include empty object', function(){
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
@@ -114,7 +114,7 @@ describe('json-schema-filter', function(){
 
     var result = filter(schema, document);
 
-    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}], general: {}});
   });
 
   it('accepts free form objects that are absent', function(){
