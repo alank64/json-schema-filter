@@ -35,7 +35,7 @@ function filterObjectOnSchema(schema, doc){
           }else if(sp.type == 'array'){
             if (doc[key]) results[key] = filterObjectOnSchema(sp, doc[key]);
           }
-          else if(sp.type == 'boolean'){
+          else if(sp.type == 'boolean' || sp.type == 'number' || sp.type == 'integer'){
             if(doc[key] != null && typeof doc[key] != 'undefined') results[key] = doc[key];
           }else{
             if (doc[key]) results[key] = doc[key]; 
