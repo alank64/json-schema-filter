@@ -143,18 +143,6 @@ describe('json-schema-filter', function(){
   it('ignores non-objects when expecting objects', function() {
     var document = {
       firstName: 'Andrew',
-      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
-      general: null
-    }
-
-    var result = filter(schema, document);
-
-    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}], general: null});
-  });
-
-  it('ignores non-objects when expecting objects', function() {
-    var document = {
-      firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, NaN],
       general: null
     }
