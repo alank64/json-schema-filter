@@ -19,7 +19,6 @@ function filterObjectOnSchema(schema, doc){
         return doc;
       }
 
-      // Check if doc is an object
       if (!isObject(doc)) {
         return doc;
       }
