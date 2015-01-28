@@ -138,7 +138,42 @@ describe('json-schema-filter', function(){
 
     expect(results).to.eql(document)
 
-  })
+  });
+
+  it('ignores non-objects when expecting objects', function() {
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      general: null
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}], general: null});
+  });
+
+  it('ignores non-objects when expecting objects', function() {
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, NaN],
+      general: null
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, NaN], general: null});
+  });
+
+  it('ignores non-arrays when expecting arrays', function() {
+    var document = {
+      firstName: 'Andrew',
+      contacts: 123
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: 123});
+  });
 
 });
 

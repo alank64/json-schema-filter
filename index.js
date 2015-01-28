@@ -1,6 +1,10 @@
 module.exports = filterObjectOnSchema;
 
 
+function isObject(obj) {
+    return obj === Object(obj);
+}
+
 function filterObjectOnSchema(schema, doc){
 
     var results;
@@ -15,6 +19,11 @@ function filterObjectOnSchema(schema, doc){
         return doc;
       }
 
+      // Check if doc is an object
+      if (!isObject(doc)) {
+        return doc;
+      }
+
       // process properties  -  recursive
       Object.keys(schema.properties).forEach(function(key){
         if (doc[key] !== undefined){
@@ -25,7 +34,9 @@ function filterObjectOnSchema(schema, doc){
             if (sp.hasOwnProperty('properties')){
               results[key] = filterObjectOnSchema(sp, doc[key]);
             } else {
-              if (Object.keys(doc[key]).length > 0){
+              if (!isObject(doc[key])) {
+                results[key] = doc[key];
+              } else if (Object.keys(doc[key]).length > 0){
                 results[key] = doc[key];
               } else {
                 results[key] = {};
@@ -38,14 +49,14 @@ function filterObjectOnSchema(schema, doc){
           else if(sp.type == 'boolean' || sp.type == 'number' || sp.type == 'integer'){
             if(doc[key] != null && typeof doc[key] != 'undefined') results[key] = doc[key];
           }else{
-            if (doc[key]) results[key] = doc[key]; 
+            if (doc[key]) results[key] = doc[key];
           }
         }
       });
 
-    }else if (schema.type == 'array'){
+    } else if (schema.type == 'array'){
       // arrays can hold objects or literals
-      if (schema.items.type == 'object') {
+      if (schema.items.type == 'object' && Array.isArray(doc)) {
         results = [];
         doc.forEach(function (item) {
           results.push(filterObjectOnSchema(schema.items, item));
