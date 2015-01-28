@@ -9,14 +9,14 @@ For performance reasons it is assumed that the json-schema contains less items t
 ### Install
 
 ```bash
-$ npm install json-schema-filter
+$ npm install uber-json-schema-filter
 ```
 
 ### Usage...
 
 ```javascript
 
-var filter = require('json-schema-filter');
+var filter = require('uber-json-schema-filter');
 
 var schema = {
     "title": "Example Schema",

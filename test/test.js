@@ -19,6 +19,10 @@ describe('json-schema-filter', function(){
         "type": "integer",
         "minimum": 0
       },
+      "isLive": {
+        "description": "Live or dead",
+        "type": "boolean"
+      },
       "general": {
         "type": "object",
         "required": false
@@ -68,12 +72,14 @@ describe('json-schema-filter', function(){
     var document = {
       firstName: 'Andrew',
       lastName: 'Lank',
+      age: 0,
+      isLive: false,
       thisOne: 'should not appear in results'
     }
 
     var result = filter(schema, document);
 
-    expect(result).to.eql({firstName: 'Andrew', lastName: 'Lank'});
+    expect(result).to.eql({firstName: 'Andrew', lastName: 'Lank', age: 0, isLive: false});
   });
 
   it('excludes non schema defined array objects', function(){
@@ -99,7 +105,7 @@ describe('json-schema-filter', function(){
     expect(result).to.eql(document);
   });
 
-  it('accepts free form objects, if empty do not include them', function(){
+  it('accepts free form objects, still include empty object', function(){
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
@@ -108,7 +114,7 @@ describe('json-schema-filter', function(){
 
     var result = filter(schema, document);
 
-    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}], general: {}});
   });
 
   it('accepts free form objects that are absent', function(){
@@ -132,7 +138,42 @@ describe('json-schema-filter', function(){
 
     expect(results).to.eql(document)
 
-  })
+  });
+
+  it('ignores non-objects when expecting objects', function() {
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      general: null
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}], general: null});
+  });
+
+  it('ignores non-objects when expecting objects', function() {
+    var document = {
+      firstName: 'Andrew',
+      contacts: [{phone: '5146666666'}, NaN],
+      general: null
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, NaN], general: null});
+  });
+
+  it('ignores non-arrays when expecting arrays', function() {
+    var document = {
+      firstName: 'Andrew',
+      contacts: 123
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: 123});
+  });
 
 });
 
