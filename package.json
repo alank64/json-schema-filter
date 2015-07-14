@@ -1,11 +1,11 @@
 {
   "name": "json-schema-filter",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Filters (removes) objects from document based on passed json-schema",
   "main": "index.js",
   "devDependencies": {
     "chai": "^1.9.1",
-    "mocha": "~1.15.1"
+    "mocha": "~2.2.5"
   },
   "scripts": {
     "test": "mocha test/test.js"
