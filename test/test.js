@@ -140,6 +140,80 @@ describe('json-schema-filter', function(){
 
   })
 
+  describe("should not omit null for", function() {
+      var schemaForNullTest;
+      beforeEach(function () {
+          schemaForNullTest = {
+              "type": "object",
+              "properties": {
+                  "firstName": {
+                      "type": "string"
+                  },
+                  "lastName": {
+                      "type": "string"
+                  },
+                  "age": {
+                      "type": "number"
+                  },
+                  "hometown": {
+                      "type": "object",
+                      "properties": {
+                          "city": {
+                              "type": "string"
+                          }
+                      }
+                  },
+                  "interests": {
+                      "type": "array",
+                      "items": {
+                            "type": "string"
+                      }
+                  }
+              }
+          }
+      });
+      it('object', function(){
+          var data = {
+              firstName: 'John',
+              lastName: 'Dodd',
+              age: 1,
+              hometown: null,
+              interests: ['smile']
+          };
+
+        var results = filter(schemaForNullTest, data)
+        expect(results).to.eql(data)
+      })
+
+      it('array', function(){
+          var data = {
+              firstName: 'John',
+              lastName: 'Dodd',
+              age: 2,
+              hometown: {
+                  city: 'NYC'
+              },
+              interests: null
+          };
+
+        var results = filter(schemaForNullTest, data)
+        expect(results).to.eql(data)
+      })
+
+      it('literals', function(){
+          var data = {
+              firstName: null,
+              lastName: 'Dodd',
+              age: null,
+              hometown: {
+                  city: 'NYC'
+              },
+              interests: ['smile']
+          };
+
+        var results = filter(schemaForNullTest, data)
+        expect(results).to.eql(data)
+      })
+  })
+
 });
-
-
