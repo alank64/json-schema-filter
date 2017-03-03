@@ -48,7 +48,7 @@ function filterObjectOnSchema(schema, doc){
           else if(sp.type == 'boolean' || sp.type == 'number' || sp.type == 'integer'){
             if(doc[key] != null && typeof doc[key] != 'undefined') results[key] = doc[key];
           }else{
-            if (doc[key]) results[key] = doc[key];
+            if (doc[key] != undefined && doc[key] != null) results[key] = doc[key];
           }
         }
       });
