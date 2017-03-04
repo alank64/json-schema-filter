@@ -49,6 +49,9 @@ describe('json-schema-filter', function(){
         "items": {
           "type": "string"
         }
+      },
+      "boolField":{
+        "type": ["boolean", "null"]
       }
     },
     "required": ["firstName", "lastName"]
@@ -161,6 +164,18 @@ describe('json-schema-filter', function(){
     var result = filter(schema, document);
 
     expect(result).to.eql({firstName: 'Andrew', contacts: 123});
+  });
+
+  it('does not filter falsey types when type is an array of types', function() {
+    var document = {
+      firstName: 'Andrew',
+      contacts: 123,
+      boolField: false
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: 123, boolField: false});
   });
 
 });
