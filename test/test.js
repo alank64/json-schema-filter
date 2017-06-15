@@ -52,6 +52,25 @@ describe('json-schema-filter', function(){
       },
       "boolField":{
         "type": ["boolean", "null"]
+      },
+      "nullableObjectField":{
+        "type": ["object", "null"],
+        "properties": {
+          "validField": {
+            "type": "string"
+          }
+        }
+      },
+      "nullableArrayField":{
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "validField": {
+                "type": "string"
+              }
+            }
+          }
       }
     },
     "required": ["firstName", "lastName"]
@@ -176,6 +195,38 @@ describe('json-schema-filter', function(){
     var result = filter(schema, document);
 
     expect(result).to.eql({firstName: 'Andrew', contacts: 123, boolField: false});
+  });
+
+  it('filters fields properly when type is ["object", "null"]', function() {
+    var document = {
+        firstName: 'Andrew',
+        contacts: 123,
+        boolField: false,
+        nullableObjectField: {
+          validField: 'foo',
+          invalidField: 'bar'
+        }
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: 123, boolField: false, nullableObjectField: {validField: 'foo'}});
+  });
+
+  it('filters fields properly when type is ["array", "null"]', function() {
+    var document = {
+        firstName: 'Andrew',
+        contacts: 123,
+        boolField: false,
+        nullableArrayField: [{
+          validField: 'foo',
+          invalidField: 'bar'
+        }]
+    }
+
+    var result = filter(schema, document);
+
+    expect(result).to.eql({firstName: 'Andrew', contacts: 123, boolField: false, nullableArrayField: [{validField: 'foo'}]});
   });
 
 });
