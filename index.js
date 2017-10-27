@@ -21,7 +21,7 @@ function filterObjectOnSchema(schema, doc) {
                     if (sp.type == 'object') {
 
                         // check if property-less object (free-form)
-                        if (sp.hasOwnProperty('properties')) {
+                        if (Object.prototype.hasOwnProperty.call(sp, 'properties')) {
                             results[key] = filterObjectOnSchema(sp, doc[key]);
                         } else {
                             if (Object.keys(doc[key]).length > 0) {
