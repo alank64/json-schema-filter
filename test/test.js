@@ -2,8 +2,7 @@ var expect = require('chai').expect;
 var filter = require('../index.js');
 
 
-describe('json-schema-filter', function(){
-
+describe('json-schema-filter', function() {
   var schema = {
     "title": "Example Schema",
     "type": "object",
@@ -55,165 +54,191 @@ describe('json-schema-filter', function(){
   };
 
 
-  it('filters the docuemnt with no exclusions', function(){
+  it('filters the docuemnt with no exclusions', function() {
 
     var document = {
       firstName: 'Andrew',
       lastName: 'Lank'
-    }
+    };
 
     var result = filter(schema, document);
 
     expect(result).to.eql(document);
-
   });
 
-  it('excludes non schema defined objects', function(){
+  it('excludes non schema defined objects', function() {
     var document = {
       firstName: 'Andrew',
       lastName: 'Lank',
       age: 0,
       isLive: false,
       thisOne: 'should not appear in results'
-    }
+    };
 
     var result = filter(schema, document);
 
     expect(result).to.eql({firstName: 'Andrew', lastName: 'Lank', age: 0, isLive: false});
   });
 
-  it('excludes non schema defined array objects', function(){
+  it('excludes non schema defined array objects', function() {
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888', shouldNot: 'see this'}]
-    }
+    };
 
     var result = filter(schema, document);
 
     expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
   });
 
-  it('accepts free form objects', function(){
+  it('accepts free form objects', function() {
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
       general: {hobbies: ['cylcing', 'jogging', 'death'], drinking_abilities: 'professional'}
-    }
+    };
 
     var result = filter(schema, document);
 
     expect(result).to.eql(document);
   });
 
-  it('accepts free form objects, if empty do not include them', function(){
+  it('accepts free form objects, if empty do not include them', function() {
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
       general: {}
-    }
+    };
 
     var result = filter(schema, document);
 
     expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
   });
 
-  it('accepts free form objects that are absent', function(){
+  it('accepts free form objects that are absent', function() {
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888'}]
-    }
+    };
 
-    var result = filter(schema, document)
+    var result = filter(schema, document);
 
-    expect(result).to.eql(document)
+    expect(result).to.eql(document);
   });
-  it('filters array literals', function(){
+
+  it('filters array literals', function() {
     var document = {
       firstName: 'Andrew',
       contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
       hobbies: ['driving', 'working', 'working harder', 'wish I wasn\'t working']
-    }
+    };
 
-    var results = filter(schema, document)
+    var results = filter(schema, document);
 
-    expect(results).to.eql(document)
+    expect(results).to.eql(document);
+  });
 
-  })
+  it("should not remove empty string property", function() {
+    var schemaForEmptyStringTest = {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "middleName": {
+          "type": "string"
+        }
+      }
+    };
+    
+    var data = {
+      firstName: 'John',
+      lastName: 'Dodd',
+      middleName: ''
+    };
 
-  describe("should not omit null for", function() {
-      var schemaForNullTest;
-      beforeEach(function () {
-          schemaForNullTest = {
-              "type": "object",
-              "properties": {
-                  "firstName": {
-                      "type": "string"
-                  },
-                  "lastName": {
-                      "type": "string"
-                  },
-                  "age": {
-                      "type": "number"
-                  },
-                  "hometown": {
-                      "type": "object",
-                      "properties": {
-                          "city": {
-                              "type": "string"
-                          }
-                      }
-                  },
-                  "interests": {
-                      "type": "array",
-                      "items": {
-                            "type": "string"
-                      }
-                  }
+    var results = filter(schemaForEmptyStringTest, data);
+
+    expect(results).to.eql(data);
+  });
+
+  describe("should not omit null for:", function() {
+    var schemaForNullTest;
+    beforeEach(function() {
+      schemaForNullTest = {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "age": {
+            "type": "number"
+          },
+          "hometown": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
               }
+            }
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
-      });
-      it('object', function(){
-          var data = {
-              firstName: 'John',
-              lastName: 'Dodd',
-              age: 1,
-              hometown: null,
-              interests: ['smile']
-          };
+        }
+      }
+    });
+    
+    it('object', function() {
+      var data = {
+        firstName: 'John',
+        lastName: 'Dodd',
+        age: 1,
+        hometown: null,
+        interests: ['smile']
+      };
 
-        var results = filter(schemaForNullTest, data)
-        expect(results).to.eql(data)
-      })
+      var results = filter(schemaForNullTest, data);
+      expect(results).to.eql(data);
+    });
 
-      it('array', function(){
-          var data = {
-              firstName: 'John',
-              lastName: 'Dodd',
-              age: 2,
-              hometown: {
-                  city: 'NYC'
-              },
-              interests: null
-          };
+    it('array', function() {
+      var data = {
+        firstName: 'John',
+        lastName: 'Dodd',
+        age: 2,
+        hometown: {
+          city: 'NYC'
+        },
+        interests: null
+      };
 
-        var results = filter(schemaForNullTest, data)
-        expect(results).to.eql(data)
-      })
+      var results = filter(schemaForNullTest, data);
+      expect(results).to.eql(data);
+    });
 
-      it('literals', function(){
-          var data = {
-              firstName: null,
-              lastName: 'Dodd',
-              age: null,
-              hometown: {
-                  city: 'NYC'
-              },
-              interests: ['smile']
-          };
+    it('literals', function() {
+      var data = {
+        firstName: null,
+        lastName: 'Dodd',
+        age: null,
+        hometown: {
+          city: 'NYC'
+        },
+        interests: ['smile']
+      };
 
-        var results = filter(schemaForNullTest, data)
-        expect(results).to.eql(data)
-      })
-  })
-
+      var results = filter(schemaForNullTest, data);
+      expect(results).to.eql(data);
+    });
+  });
 });
