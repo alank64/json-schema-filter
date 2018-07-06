@@ -24,9 +24,11 @@ var schema = {
     "properties": {
       "firstName": {
         "type": "string"
+        "default": ""
       },
       "lastName": {
-        "type": "string"
+        "type": "string",
+        "default": ""
       },
       "age": {
         "description": "Age in years",
@@ -64,11 +66,11 @@ var schema = {
     "required": ["firstName", "lastName"]
 };
 
-var document = {firstName: 'John', lastName: 'Dow!', shouldNot: 'see this!'};
+var document = {lastName: 'Dow!', shouldNot: 'see this!'};
 
 var results = filter(schema, document);   
 
-console.log(results);  // # {firstName: 'John', lastName: 'Dow!'}
+console.log(results);  // # {firstName: '', lastName: 'Dow!'}
 
 // Works on nested objects and arrays as well...
 var document2 = {
@@ -93,3 +95,5 @@ console.log(nestedResults);  // # {firstName: 'Johnny', lastName: 'Dowski', cont
 If a ```"type": "object"``` with no ```"property":``` is defined (see 'general:' in above example), or empty, the entire object is removed from the results. It could be that you require it to be included but empty, but to the best of my knowledge I thought it would be cleaner to simply remove it if empty. Else it copies everything over, as in all of what is in the properties of the key.
 
 Background info: The lack of ```property``` is legal in json-schema and means anything goes, or what I refer to as free-form.. free-style.. oh well, pick your meaning for it, it has the word 'free'!
+
+Add property "default" if you want the output of your form to have a default value
