@@ -1,8 +1,9 @@
 var expect = require('chai').expect;
 var filter = require('../index.js');
+var resolveSchemaDependencies = require("../resolveDependencies");
 
 
-describe('json-schema-filter', function() {
+describe('json-schema-filter', function () {
   var schema = {
     "title": "Example Schema",
     "type": "object",
@@ -42,7 +43,7 @@ describe('json-schema-filter', function() {
           }
         }
       },
-      "hobbies":{
+      "hobbies": {
         "type": "array",
         "required": false,
         "items": {
@@ -54,7 +55,7 @@ describe('json-schema-filter', function() {
   };
 
 
-  it('filters the docuemnt with no exclusions', function() {
+  it('filters the docuemnt with no exclusions', function () {
 
     var document = {
       firstName: 'Andrew',
@@ -66,7 +67,7 @@ describe('json-schema-filter', function() {
     expect(result).to.eql(document);
   });
 
-  it('excludes non schema defined objects', function() {
+  it('excludes non schema defined objects', function () {
     var document = {
       firstName: 'Andrew',
       lastName: 'Lank',
@@ -77,25 +78,25 @@ describe('json-schema-filter', function() {
 
     var result = filter(schema, document);
 
-    expect(result).to.eql({firstName: 'Andrew', lastName: 'Lank', age: 0, isLive: false});
+    expect(result).to.eql({ firstName: 'Andrew', lastName: 'Lank', age: 0, isLive: false });
   });
 
-  it('excludes non schema defined array objects', function() {
+  it('excludes non schema defined array objects', function () {
     var document = {
       firstName: 'Andrew',
-      contacts: [{phone: '5146666666'}, {phone: '5148888888', shouldNot: 'see this'}]
+      contacts: [{ phone: '5146666666' }, { phone: '5148888888', shouldNot: 'see this' }]
     };
 
     var result = filter(schema, document);
 
-    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
+    expect(result).to.eql({ firstName: 'Andrew', contacts: [{ phone: '5146666666' }, { phone: '5148888888' }] });
   });
 
-  it('accepts free form objects', function() {
+  it('accepts free form objects', function () {
     var document = {
       firstName: 'Andrew',
-      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
-      general: {hobbies: ['cylcing', 'jogging', 'death'], drinking_abilities: 'professional'}
+      contacts: [{ phone: '5146666666' }, { phone: '5148888888' }],
+      general: { hobbies: ['cylcing', 'jogging', 'death'], drinking_abilities: 'professional' }
     };
 
     var result = filter(schema, document);
@@ -103,22 +104,22 @@ describe('json-schema-filter', function() {
     expect(result).to.eql(document);
   });
 
-  it('accepts free form objects, if empty do not include them', function() {
+  it('accepts free form objects, if empty do not include them', function () {
     var document = {
       firstName: 'Andrew',
-      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      contacts: [{ phone: '5146666666' }, { phone: '5148888888' }],
       general: {}
     };
 
     var result = filter(schema, document);
 
-    expect(result).to.eql({firstName: 'Andrew', contacts: [{phone: '5146666666'}, {phone: '5148888888'}]});
+    expect(result).to.eql({ firstName: 'Andrew', contacts: [{ phone: '5146666666' }, { phone: '5148888888' }] });
   });
 
-  it('accepts free form objects that are absent', function() {
+  it('accepts free form objects that are absent', function () {
     var document = {
       firstName: 'Andrew',
-      contacts: [{phone: '5146666666'}, {phone: '5148888888'}]
+      contacts: [{ phone: '5146666666' }, { phone: '5148888888' }]
     };
 
     var result = filter(schema, document);
@@ -126,10 +127,10 @@ describe('json-schema-filter', function() {
     expect(result).to.eql(document);
   });
 
-  it('filters array literals', function() {
+  it('filters array literals', function () {
     var document = {
       firstName: 'Andrew',
-      contacts: [{phone: '5146666666'}, {phone: '5148888888'}],
+      contacts: [{ phone: '5146666666' }, { phone: '5148888888' }],
       hobbies: ['driving', 'working', 'working harder', 'wish I wasn\'t working']
     };
 
@@ -138,7 +139,7 @@ describe('json-schema-filter', function() {
     expect(results).to.eql(document);
   });
 
-  it("should not remove empty string property", function() {
+  it("should not remove empty string property", function () {
     var schemaForEmptyStringTest = {
       "type": "object",
       "properties": {
@@ -153,7 +154,7 @@ describe('json-schema-filter', function() {
         }
       }
     };
-    
+
     var data = {
       firstName: 'John',
       lastName: 'Dodd',
@@ -165,9 +166,9 @@ describe('json-schema-filter', function() {
     expect(results).to.eql(data);
   });
 
-  describe("should not omit null for:", function() {
+  describe("should not omit null for:", function () {
     var schemaForNullTest;
-    beforeEach(function() {
+    beforeEach(function () {
       schemaForNullTest = {
         "type": "object",
         "properties": {
@@ -197,8 +198,8 @@ describe('json-schema-filter', function() {
         }
       }
     });
-    
-    it('object', function() {
+
+    it('object', function () {
       var data = {
         firstName: 'John',
         lastName: 'Dodd',
@@ -211,7 +212,7 @@ describe('json-schema-filter', function() {
       expect(results).to.eql(data);
     });
 
-    it('array', function() {
+    it('array', function () {
       var data = {
         firstName: 'John',
         lastName: 'Dodd',
@@ -226,7 +227,7 @@ describe('json-schema-filter', function() {
       expect(results).to.eql(data);
     });
 
-    it('literals', function() {
+    it('literals', function () {
       var data = {
         firstName: null,
         lastName: 'Dodd',
@@ -240,5 +241,109 @@ describe('json-schema-filter', function() {
       var results = filter(schemaForNullTest, data);
       expect(results).to.eql(data);
     });
+  });
+});
+
+describe("The resolveSchemaDependencies function", () => {
+
+  it("should return a flat schema with 3 properties", () => {
+    const schema = {
+      "type": "object",
+
+      "properties": {
+        "name": { "type": "string" },
+        "credit_card": { "type": "number" }
+      },
+
+      "required": ["name"],
+
+      "dependencies": {
+        "credit_card": {
+          "properties": {
+            "billing_address": { "type": "string" }
+          },
+          "required": ["billing_address"]
+        }
+      }
+    };
+
+    const object = {
+      "name": "John Doe",
+      "credit_card": 5555555555555555,
+      "billing_address": "555 Debtor's Lane"
+    };
+
+    const flatSchema = resolveSchemaDependencies(schema, object);
+
+    expect(Object.keys(flatSchema.properties).length).to.equal(3);
+    expect(flatSchema.properties).to.have.keys([
+      "name",
+      "credit_card",
+      "billing_address"
+    ]);
+    console.log("the required props", flatSchema);
+    expect(flatSchema.required[1]).to.equal("billing_address");
+  });
+
+  it("billing_address shouldn't be required if no credit_card is set", () => {
+    const schema = {
+      "type": "object",
+
+      "properties": {
+        "name": { "type": "string" },
+        "credit_card": { "type": "number" }
+      },
+
+      "required": ["name"],
+
+      "dependencies": {
+        "credit_card": {
+          "properties": {
+            "billing_address": { "type": "string" }
+          },
+          "required": ["billing_address"]
+        }
+      }
+    };
+
+    const object = {
+      "name": "John Doe",
+      "billing_address": "555 Debtor's Lane"
+    };
+
+    const flatSchema = resolveSchemaDependencies(schema, object);
+
+    expect(Object.keys(flatSchema.properties).length).to.equal(3);
+    expect(flatSchema.properties).to.have.keys([
+      "name",
+      "credit_card",
+      "billing_address"
+    ]);
+    expect(flatSchema.required).to.have.lengthOf(1);
+    expect(flatSchema.required[0]).to.equal("name");
+  });
+
+  it("shouldn't alter the number of properties for dependencies property in format of dependentRequired", () => {
+
+    const schema = {
+      "type": "object",
+
+      "properties": {
+        "name": { "type": "string" },
+        "credit_card": { "type": "number" },
+        "billing_address": { "type": "string" }
+      },
+
+      "required": ["name"],
+
+      "dependencies": {
+        "credit_card": ["billing_address"]
+      }
+    };
+
+    const flatSchema = resolveSchemaDependencies(schema);
+
+    expect(Object.keys(flatSchema.properties).length).to.equal(3);
+
   });
 });
